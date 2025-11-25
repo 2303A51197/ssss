@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TDD – Overdue Fine Calculation (Test Cases + Code)</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fa;
+        padding: 20px;
+        line-height: 1.6;
+    }
+    .card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 800px;
+        margin: auto;
+        box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    h2 { color: #1e3a8a; }
+    pre {
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 12px;
+        border-radius: 6px;
+        overflow-x: auto;
+    }
+</style>
+</head>
+
+<body>
+<div class="card">
+
+<h2>Test Driven Development (TDD) – Overdue Fine Calculation</h2>
+
+<h3>Short Answer (Steps)</h3>
+<ol>
+    <li><b>Write a failing test (RED):</b> Create the first test case before writing code.</li>
+    <li><b>Write the minimum code to pass (GREEN):</b> Implement only simple logic.</li>
+    <li><b>Refactor:</b> Clean and optimize code without breaking tests.</li>
+    <li><b>Add more test cases:</b> Repeat Red → Green → Refactor.</li>
+</ol>
+
+<hr>
+
+<h3>Test Cases</h3>
+<ul>
+    <li><b>TC1:</b> days=3, rate=10 → Output=30</li>
+    <li><b>TC2:</b> days=0, rate=10 → Output=0</li>
+    <li><b>TC3:</b> days=-2, rate=10 → Output=0</li>
+    <li><b>TC4:</b> days=5, rate=0 → Output=0</li>
+    <li><b>TC5:</b> days=10, rate=2 → Output=20</li>
+</ul>
+
+<hr>
+
+<h3>Step 1: Write Failing Test (RED)</h3>
+<pre>
+// RED – Test must fail first
+describe("calculateFine", () => {
+  it("returns 30 for 3 days overdue at 10/day", () => {
+    expect(calculateFine(3, 10)).toBe(30);
+  });
+});
+</pre>
+
+<h3>Step 2: Minimum Code to Pass (GREEN)</h3>
+<pre>
+function calculateFine(days, rate) {
+  return days * rate;
+}
+</pre>
+
+<h3>Step 3: Add More Test Cases</h3>
+<pre>
+it("returns 0 when days = 0", () => {
+  expect(calculateFine(0, 10)).toBe(0);
+});
+
+it("returns 0 for negative days", () => {
+  expect(calculateFine(-2, 10)).toBe(0);
+});
+
+it("returns 0 when rate = 0", () => {
+  expect(calculateFine(5, 0)).toBe(0);
+});
+</pre>
+
+<h3>Step 4: Refactored Code (Final)</h3>
+<pre>
+function calculateFine(days, rate) {
+  if (days < 0 || rate < 0) return 0;
+  return days * rate;
+}
+</pre>
+
+</div>
+</body>
+</html>
