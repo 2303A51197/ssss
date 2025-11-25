@@ -2,99 +2,212 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>TDD – Overdue Fine Calculation (Test Cases + Code)</title>
+<title>Advanced Library Fine Test Runner</title>
+
 <style>
     body {
-        font-family: Arial, sans-serif;
-        background: #f5f7fa;
+        margin: 0;
+        background: #eef2f7;
+        font-family: "Segoe UI", Arial, sans-serif;
         padding: 20px;
-        line-height: 1.6;
+    }
+    .container {
+        max-width: 900px;
+        margin: auto;
+    }
+    h1 {
+        text-align: center;
+        color: #0f172a;
     }
     .card {
         background: #fff;
         padding: 20px;
-        border-radius: 10px;
-        max-width: 800px;
-        margin: auto;
-        box-shadow: 0 0 12px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        margin-top: 25px;
     }
-    h2 { color: #1e3a8a; }
-    pre {
-        background: #0f172a;
-        color: #e2e8f0;
+    label {
+        font-weight: 600;
+        margin-top: 10px;
+        display: block;
+    }
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+    button {
+        background: #2563eb;
+        color: #fff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-weight: 600;
+    }
+    button:hover {
+        background: #1e4fcf;
+    }
+    .output {
+        margin-top: 10px;
         padding: 12px;
-        border-radius: 6px;
-        overflow-x: auto;
+        background: #f1f5f9;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    /* Test Runner Style */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+    }
+    th, td {
+        padding: 10px;
+        border-bottom: 1px solid #e2e8f0;
+        text-align: center;
+    }
+    .pass {
+        color: #0d9488;
+        font-weight: 700;
+    }
+    .fail {
+        color: #dc2626;
+        font-weight: 700;
+    }
+
+    .progress {
+        margin-top: 15px;
+        height: 14px;
+        background: #ccc;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #16a34a, #4ade80);
+        transition: 0.5s;
     }
 </style>
 </head>
 
 <body>
-<div class="card">
+<div class="container">
+    <h1>Advanced Library Overdue Fine — Test Runner</h1>
 
-<h2>Test Driven Development (TDD) – Overdue Fine Calculation</h2>
+    <div class="card">
+        <h2>Calculate Fine</h2>
 
-<h3>Short Answer (Steps)</h3>
-<ol>
-    <li><b>Write a failing test (RED):</b> Create the first test case before writing code.</li>
-    <li><b>Write the minimum code to pass (GREEN):</b> Implement only simple logic.</li>
-    <li><b>Refactor:</b> Clean and optimize code without breaking tests.</li>
-    <li><b>Add more test cases:</b> Repeat Red → Green → Refactor.</li>
-</ol>
+        <label>Days Overdue:</label>
+        <input type="number" id="days" value="3">
 
-<hr>
+        <label>Rate per Day:</label>
+        <input type="number" id="rate" value="10">
 
-<h3>Test Cases</h3>
-<ul>
-    <li><b>TC1:</b> days=3, rate=10 → Output=30</li>
-    <li><b>TC2:</b> days=0, rate=10 → Output=0</li>
-    <li><b>TC3:</b> days=-2, rate=10 → Output=0</li>
-    <li><b>TC4:</b> days=5, rate=0 → Output=0</li>
-    <li><b>TC5:</b> days=10, rate=2 → Output=20</li>
-</ul>
+        <button onclick="calculate()">Calculate</button>
 
-<hr>
+        <div class="output" id="output" style="display:none;"></div>
+    </div>
 
-<h3>Step 1: Write Failing Test (RED)</h3>
-<pre>
-// RED – Test must fail first
-describe("calculateFine", () => {
-  it("returns 30 for 3 days overdue at 10/day", () => {
-    expect(calculateFine(3, 10)).toBe(30);
-  });
-});
-</pre>
+    <div class="card">
+        <h2>Automated Test Cases</h2>
 
-<h3>Step 2: Minimum Code to Pass (GREEN)</h3>
-<pre>
-function calculateFine(days, rate) {
-  return days * rate;
-}
-</pre>
+        <div class="progress">
+            <div class="bar" id="bar"></div>
+        </div>
 
-<h3>Step 3: Add More Test Cases</h3>
-<pre>
-it("returns 0 when days = 0", () => {
-  expect(calculateFine(0, 10)).toBe(0);
-});
+        <table>
+            <thead>
+                <tr>
+                    <th>Test Case</th>
+                    <th>Input</th>
+                    <th>Expected</th>
+                    <th>Actual</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="testTable"></tbody>
+        </table>
 
-it("returns 0 for negative days", () => {
-  expect(calculateFine(-2, 10)).toBe(0);
-});
-
-it("returns 0 when rate = 0", () => {
-  expect(calculateFine(5, 0)).toBe(0);
-});
-</pre>
-
-<h3>Step 4: Refactored Code (Final)</h3>
-<pre>
-function calculateFine(days, rate) {
-  if (days < 0 || rate < 0) return 0;
-  return days * rate;
-}
-</pre>
-
+        <button onclick="runTests()">Re-run Tests</button>
+    </div>
 </div>
+
+<script>
+/* =================================
+   ADVANCED FINE CALCULATION LOGIC
+================================== */
+function calculateFine(days, rate) {
+    days = Number(days);
+    rate = Number(rate);
+
+    if (isNaN(days) || isNaN(rate)) return 0;
+    if (days < 0 || rate < 0) return 0;
+    return days * rate;
+}
+
+/* ===============================
+     USER CALCULATION FUNCTION
+=============================== */
+function calculate() {
+    const d = document.getElementById("days").value;
+    const r = document.getElementById("rate").value;
+
+    const result = calculateFine(d, r);
+
+    const out = document.getElementById("output");
+    out.style.display = "block";
+    out.innerText = "Fine Amount: ₹ " + result;
+}
+
+/* ===============================
+      ADVANCED TEST RUNNER
+=============================== */
+const tests = [
+    { id: 1, days: 3, rate: 10, expected: 30 },
+    { id: 2, days: 0, rate: 10, expected: 0 },
+    { id: 3, days: -2, rate: 10, expected: 0 },
+    { id: 4, days: 5, rate: 0, expected: 0 },
+    { id: 5, days: 10, rate: 2, expected: 20 }
+];
+
+function runTests() {
+    const table = document.getElementById("testTable");
+    const bar = document.getElementById("bar");
+    table.innerHTML = "";
+
+    let passed = 0;
+
+    tests.forEach((t, i) => {
+        const actual = calculateFine(t.days, t.rate);
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${t.id}</td>
+            <td>${t.days}, ${t.rate}</td>
+            <td>${t.expected}</td>
+            <td>${actual}</td>
+            <td class="${actual === t.expected ? "pass" : "fail"}">
+                ${actual === t.expected ? "PASS" : "FAIL"}
+            </td>
+        `;
+
+        table.appendChild(row);
+
+        if (actual === t.expected) passed++;
+
+        bar.style.width = ((passed / tests.length) * 100) + "%";
+    });
+}
+
+/* Auto-run on load */
+runTests();
+</script>
+
 </body>
 </html>
